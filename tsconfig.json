@@ -8,7 +8,7 @@
         "skipLibCheck": true,
 
         /* Modules */
-        "allowImportingTsExtensions": true,
+        //"allowImportingTsExtensions": true,
         "moduleResolution": "bundler",
         "verbatimModuleSyntax": true,
         "moduleDetection": "force",
