@@ -1,4 +1,4 @@
-// Copyright (c) Philipp Schaad and rendure authors. All rights reserved.
+// Copyright (c) ETH Zurich and the rendure authors. All rights reserved.
 
 export const DEFAULT_CANVAS_FONTSIZE: number = 10;
 export const DEFAULT_MAX_FONTSIZE: number = 20;

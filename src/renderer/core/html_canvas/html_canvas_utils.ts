@@ -1,4 +1,4 @@
-// Copyright (c) Philipp Schaad and rendure authors. All rights reserved.
+// Copyright (c) ETH Zurich and the rendure authors. All rights reserved.
 
 import {
     DEFAULT_CANVAS_FONTSIZE,

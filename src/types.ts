@@ -1,4 +1,4 @@
-// Copyright (c) Philipp Schaad and rendure authors. All rights reserved.
+// Copyright (c) ETH Zurich and the rendure authors. All rights reserved.
 
 export interface Point2D {
     x: number;
