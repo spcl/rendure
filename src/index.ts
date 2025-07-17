@@ -7,5 +7,6 @@ export * from './renderer/core/html_canvas/canvas_manager';
 export * from './renderer/core/html_canvas/html_canvas_renderable';
 export * from './renderer/core/html_canvas/html_canvas_renderer';
 export * from './renderer/core/html_canvas/html_canvas_utils';
+export * from './utils/colors';
 export * from './constants';
 export * from './types';

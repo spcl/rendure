@@ -62,3 +62,49 @@ export function boundingBox(
 
     return retBB;
 }
+
+// This function was taken from the now deprecated dagrejs library, see:
+// https://github.com/dagrejs/dagre/blob/c8bb4a1b891fc50071e6fac7bd84658d31eb9d8a/lib/util.js#L96
+/*
+ * Finds where a line starting at point ({x, y}) would intersect a rectangle
+ * ({x, y, w, h}) if it were pointing at the rectangle's center.
+ */
+export function findLineStartRectIntersection(
+    rect: SimpleRect, point: Point2D
+): Point2D {
+    const x = rect.x;
+    const y = rect.y;
+
+    // Rectangle intersection algorithm from:
+    // http://math.stackexchange.com/questions/108113/find-edge-between-two-boxes
+    const dx = point.x - x;
+    const dy = point.y - y;
+    let w = rect.w / 2;
+    let h = rect.h / 2;
+
+    if (!dx && !dy) {
+        throw new Error(
+            'Not possible to find intersection inside of the rectangle'
+        );
+    }
+
+    let sx, sy;
+    if (Math.abs(dy) * w > Math.abs(dx) * h) {
+        // Intersection is top or bottom of rect.
+        if (dy < 0)
+            h = -h;
+        sx = h * dx / dy;
+        sy = h;
+    } else {
+        // Intersection is left or right of rect.
+        if (dx < 0)
+            w = -w;
+        sx = w;
+        sy = w * dy / dx;
+    }
+
+    return {
+        x: x + sx,
+        y: y + sy,
+    };
+}
