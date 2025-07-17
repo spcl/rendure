@@ -29,6 +29,24 @@ interface PDFCanvasRenderingContext2D extends CanvasRenderingContext2D {
     end(): void;
 }
 
+export interface HTMLCanvasRendererOptions {
+    debugDrawing?: boolean;
+    useVerticalScrollNavigation?: boolean;
+    adaptiveContentHiding?: boolean;
+    viewportOnly?: boolean;
+    bindToViewport?: boolean;
+}
+
+export const HTML_CANVAS_RENDERER_DEFAULT_OPTIONS: HTMLCanvasRendererOptions = {
+    debugDrawing: false,
+    useVerticalScrollNavigation: false,
+    adaptiveContentHiding: true,
+    viewportOnly: true,
+    bindToViewport: true,
+};
+
+export type HTMLCanvasRendererOptionKey = keyof HTMLCanvasRendererOptions;
+
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface HTMLCanvasRendererEvent {
 }
@@ -80,14 +98,8 @@ export abstract class HTMLCanvasRenderer extends RendererBase {
     protected readonly errorPopoverContainer: JQuery;
     protected readonly errorPopoverText: JQuery;
 
-    // Determine whether rendering only happens in the viewport or also outside.
-    protected _viewportOnly: boolean = true;
-    // Determine whether content should adaptively be hidden when zooming out.
-    // Controlled by the settings.
-    protected _adaptiveHiding: boolean = true;
-    protected _desiredAdaptiveHiding: boolean = true;
-    // Determine whether to bind the viewport to the content bounding box.
-    protected _bindToViewport: boolean = true;
+    protected _desiredOptions: HTMLCanvasRendererOptions;
+    protected _currentOptions: HTMLCanvasRendererOptions;
 
     public constructor(
         protected container: JQuery,
@@ -96,16 +108,17 @@ export abstract class HTMLCanvasRenderer extends RendererBase {
         ) | null = null,
         protected initialUserTransform: DOMMatrix | null = null,
         protected backgroundColor: string | null = null,
-        debugDraw = false,
-        viewportOnly: boolean = true,
-        adaptiveHiding: boolean = true,
-        bindToViewport: boolean = true
+        desiredOptions?: HTMLCanvasRendererOptions
     ) {
-        super(debugDraw);
+        desiredOptions ??= HTML_CANVAS_RENDERER_DEFAULT_OPTIONS;
 
-        this._viewportOnly = viewportOnly;
-        this._adaptiveHiding = this._desiredAdaptiveHiding = adaptiveHiding;
-        this._bindToViewport = bindToViewport;
+        super(desiredOptions.debugDrawing ?? false);
+
+        this._desiredOptions = desiredOptions;
+
+        this._currentOptions = JSON.parse(
+            JSON.stringify(this._desiredOptions)
+        ) as HTMLCanvasRendererOptions;
 
         // Initialize the DOM.
         this.canvas = document.createElement('canvas');
@@ -415,10 +428,46 @@ export abstract class HTMLCanvasRenderer extends RendererBase {
 
     protected abstract initUI(): void;
 
-    protected abstract registerMouseHandlers(): void;
+    protected registerMouseHandlers(): void {
+        this.canvas.addEventListener('click', this.onClick.bind(this));
+        this.canvas.addEventListener('dblclick', this.onDblClick.bind(this));
+        this.canvas.addEventListener('mousedown', this.onMouseDown.bind(this));
+        this.canvas.addEventListener(
+            'touchstart', this.onTouchStart.bind(this)
+        );
+        this.canvas.addEventListener('mouseup', this.onMouseUp.bind(this));
+        this.canvas.addEventListener('touchend', this.onTouchEnd.bind(this));
+        this.canvas.addEventListener('wheel', this.onWheel.bind(this));
+        this.canvas.addEventListener('mousemove', this.onMouseMove.bind(this));
+        this.canvas.addEventListener('touchmove', this.onTouchMove.bind(this));
+        this.canvas.addEventListener(
+            'contextmenu', this.onContextMenu.bind(this)
+        );
+    }
+
+    protected onMouseMove(event: MouseEvent): boolean {
+        if (this.dragStart && this.dragStart instanceof MouseEvent &&
+            event.buttons & 1) {
+            // Pan the view with the left mouse button.
+            this.dragging = true;
+            this.panOnMouseMove(event);
+            return true;
+        } else if (this.dragStart && event.buttons & 4) {
+            // Pan the view with the middle mouse button.
+            this.dragging = true;
+            this.panOnMouseMove(event);
+            return true;
+        } else {
+            this.dragStart = undefined;
+            if (event.buttons & 1 || event.buttons & 4)
+                return true; // Don't stop propagation
+            return false;
+        }
+    }
 
     public drawAsync(ctx?: CanvasRenderingContext2D): void {
-        this._adaptiveHiding = this._desiredAdaptiveHiding;
+        this._currentOptions.adaptiveContentHiding =
+            this._desiredOptions.adaptiveContentHiding;
         this.clearCssPropertyCache();
         this.canvasManager.drawAsync(ctx);
     }
@@ -563,14 +612,15 @@ export abstract class HTMLCanvasRenderer extends RendererBase {
 
         // Save previous settings and ensure PDF exporting is done on a WYSIWYG
         // basis.
-        const oldViewportOnly = this._viewportOnly;
-        const oldAdaptiveHiding = this._adaptiveHiding;
+        const oldViewportOnly = this.options.viewportOnly;
+        const oldAdaptiveHiding = this.options.adaptiveContentHiding;
         if (!saveAll) {
-            this._viewportOnly = true;
-            this._adaptiveHiding = this._desiredAdaptiveHiding;
+            this._currentOptions.viewportOnly = true;
+            this._currentOptions.adaptiveContentHiding =
+                this._desiredOptions.adaptiveContentHiding ?? false;
         } else {
-            this._viewportOnly = false;
-            this._adaptiveHiding = false;
+            this._currentOptions.viewportOnly = false;
+            this._currentOptions.adaptiveContentHiding = false;
         }
 
         // Center on saved region.
@@ -586,8 +636,8 @@ export abstract class HTMLCanvasRenderer extends RendererBase {
                 filename,
                 this.pdfCtx?.stream.toBlobURL('application/pdf')
             );
-            this._viewportOnly = oldViewportOnly;
-            this._adaptiveHiding = oldAdaptiveHiding;
+            this._currentOptions.viewportOnly = oldViewportOnly;
+            this._currentOptions.adaptiveContentHiding = oldAdaptiveHiding;
             this.pdfCtx = undefined;
             this.drawAsync();
         });
@@ -682,7 +732,7 @@ export abstract class HTMLCanvasRenderer extends RendererBase {
      * @returns    Corrected movement clamped to the content bounding box.
      */
     public checkPanMovementInBounds(movX: number, movY: number) {
-        if (!this._bindToViewport) {
+        if (!this.options.bindToViewport) {
             return {
                 x: movX,
                 y: movY,
@@ -730,6 +780,100 @@ export abstract class HTMLCanvasRenderer extends RendererBase {
         this.extMouseHandler = handler;
     }
 
+    // ==================
+    // = Event handlers =
+    // ==================
+
+    protected onMouseDown(event: MouseEvent): boolean {
+        this.dragStart = event;
+        if (!this.mousePos)
+            return true;
+        return false;
+    }
+
+    protected onMouseUp(_event: MouseEvent): boolean {
+        this.dragStart = undefined;
+        return false;
+    }
+
+    protected onTouchStart(event: TouchEvent): boolean {
+        this.dragStart = event;
+        if (!this.mousePos)
+            return true;
+        return false;
+    }
+
+    protected onTouchEnd(event: TouchEvent): boolean {
+        if (event.touches.length === 0)
+            this.dragStart = undefined;
+        else
+            this.dragStart = event;
+        return false;
+    }
+
+    protected onTouchMove(_event: TouchEvent): boolean {
+        return true;
+    }
+
+    protected onClick(_event: MouseEvent): boolean {
+        return true;
+    }
+
+    protected onDblClick(_event: MouseEvent): boolean {
+        return true;
+    }
+
+    protected onContextMenu(event: MouseEvent): boolean {
+        event.preventDefault();
+        event.stopPropagation();
+        return false;
+    }
+
+    protected onWheel(event: WheelEvent): boolean {
+        if (this.options.useVerticalScrollNavigation && !event.ctrlKey ||
+            !this.options.useVerticalScrollNavigation && event.ctrlKey) {
+            // If vertical scroll navigation is turned on, use this to
+            // move the viewport up and down. If the control key is held
+            // down while scrolling, treat it as a typical zoom operation.
+            const movX = 0;
+            const movY = -event.deltaY;
+
+            // Check if scroll is in bounds (near graph)
+            // and restrict/correct it.
+            const correctedMovement = this.checkPanMovementInBounds(movX, movY);
+
+            this.canvasManager.translate(
+                correctedMovement.x, correctedMovement.y
+            );
+        } else {
+            // Get physical x,y coordinates (rather than canvas coordinates).
+            const br = this.canvas.getBoundingClientRect();
+            const x = event.clientX - br.x;
+            const y = event.clientY - br.y;
+            this.canvasManager.scale(event.deltaY > 0 ? 0.9 : 1.1, x, y);
+        }
+
+        this.drawAsync();
+
+        return false;
+    }
+
+    protected panOnMouseMove(
+        event: MouseEvent, suppressDraw: boolean = false
+    ): void {
+        // Check if panning in bounds and restrict/correct it.
+        const correctedMovement = this.checkPanMovementInBounds(
+            event.movementX, event.movementY
+        );
+        this.canvasManager.translate(correctedMovement.x, correctedMovement.y);
+        if (!suppressDraw)
+            this.drawAsync();
+    }
+
+    // =====================
+    // = Getters / Setters =
+    // =====================
+
     public getCanvas(): HTMLCanvasElement | null {
         return this.canvas;
     }
@@ -758,16 +902,20 @@ export abstract class HTMLCanvasRenderer extends RendererBase {
         this.backgroundColor = backgroundColor;
     }
 
-    public get viewportOnly(): boolean {
-        return this._viewportOnly;
-    }
-
-    public get adaptiveHiding(): boolean {
-        return this._adaptiveHiding;
+    public get options(): HTMLCanvasRendererOptions {
+        return this._currentOptions;
     }
 
     public get viewport(): SimpleRect {
         return this.canvasManager.viewport;
+    }
+
+    public get adaptiveHiding(): boolean {
+        return this._currentOptions.adaptiveContentHiding ?? false;
+    }
+
+    public get viewportOnly(): boolean {
+        return this._currentOptions.viewportOnly ?? false;
     }
 
 }
