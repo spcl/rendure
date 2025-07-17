@@ -254,6 +254,19 @@ export abstract class HTMLCanvasRenderer extends RendererBase {
         );
     }
 
+    public showTooltipAtMouse(text: string, html?: boolean): void {
+        let tooltipX;
+        let tooltipY;
+        if (this.realMousePos) {
+            tooltipX = this.realMousePos.x;
+            tooltipY = this.realMousePos.y;
+        } else {
+            tooltipX = this.canvas.width / 2;
+            tooltipY = this.canvas.height / 2;
+        }
+        this.showTooltip(tooltipX, tooltipY, text, html);
+    }
+
     public hideTooltip(): void {
         this.tooltipContainer.hide();
     }
