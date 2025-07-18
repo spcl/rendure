@@ -1,5 +1,7 @@
 // Copyright (c) ETH Zurich and the rendure authors. All rights reserved.
 
+import '../../../../scss/html_canvas_renderer.scss';
+
 import $ from 'jquery';
 
 import { CanvasManager } from './canvas_manager';
@@ -122,7 +124,7 @@ export abstract class HTMLCanvasRenderer extends RendererBase {
 
         // Initialize the DOM.
         this.canvas = document.createElement('canvas');
-        this.canvas.classList.add('sdfv_canvas');
+        this.canvas.classList.add('rendure-canvas');
         if (this.backgroundColor)
             this.canvas.style.backgroundColor = this.backgroundColor;
         else
@@ -211,7 +213,7 @@ export abstract class HTMLCanvasRenderer extends RendererBase {
 
         // Initialize tooltips.
         this.tooltipContainer = $('<div>', {
-            class: 'sdfv-tooltip',
+            class: 'rendure-tooltip',
             css: {
                 left: '0px',
                 top: '0px',
@@ -220,7 +222,7 @@ export abstract class HTMLCanvasRenderer extends RendererBase {
         });
         this.tooltipContainer.appendTo($(document.body));
         this.tooltipText = $('<span>', {
-            class: 'sdfv-tooltip-text',
+            class: 'rendure-tooltip-text',
             html: '',
             css: {
                 'white-space': 'pre-line',
@@ -238,7 +240,7 @@ export abstract class HTMLCanvasRenderer extends RendererBase {
             this.dbgInfoBox?.remove();
         } catch (_ex) {
             // Do nothing
-            console.log('Error while destroying HTMLCanvasRenderer:', _ex);
+            console.error('Error while destroying HTMLCanvasRenderer:', _ex);
         }
     }
 
@@ -420,7 +422,7 @@ export abstract class HTMLCanvasRenderer extends RendererBase {
             this.onMinimapClicked(ev);
         });
         this.minimapCanvas.id = 'minimap';
-        this.minimapCanvas.classList.add('sdfv_canvas');
+        this.minimapCanvas.classList.add('rendure-canvas');
         this.minimapCanvas.style.backgroundColor = 'white';
         this.minimapCtx = this.minimapCanvas.getContext('2d') ?? undefined;
         this.container.append(this.minimapCanvas);
@@ -494,8 +496,8 @@ export abstract class HTMLCanvasRenderer extends RendererBase {
 
     public onresize(): void {
         // Update the canvas size.
-        this.canvas.style.width = '99%';
-        this.canvas.style.height = '99%';
+        //this.canvas.style.width = '99%';
+        //this.canvas.style.height = '99%';
         this.canvas.width = this.canvas.offsetWidth;
         this.canvas.height = this.canvas.offsetHeight;
     }
