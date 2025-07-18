@@ -85,31 +85,6 @@ export abstract class Renderable {
         return { x: this.x - this.width / 2, y: this.y - this.height / 2 };
     }
 
-    public strokeStyle(renderer?: RendererBase): string {
-        if (!renderer)
-            return 'black';
-
-        if (this.selected) {
-            if (this.hovered) {
-                return this.getCssProperty(
-                    renderer, '--color-selected-hovered'
-                );
-            } else if (this.highlighted) {
-                return this.getCssProperty(
-                    renderer, '--color-selected-highlighted'
-                );
-            } else {
-                return this.getCssProperty(renderer, '--color-selected');
-            }
-        } else {
-            if (this.hovered)
-                return this.getCssProperty(renderer, '--color-hovered');
-            else if (this.highlighted)
-                return this.getCssProperty(renderer, '--color-highlighted');
-        }
-        return this.getCssProperty(renderer, '--color-default');
-    }
-
     // General bounding-box intersection function. Returns true iff point or
     // rectangle intersect element.
     public intersect(

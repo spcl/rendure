@@ -3,32 +3,45 @@
 @import 'tooltips';
 
 
-.html-canvas-renderer-interaction-info-container {
-    position: absolute;
-    bottom: .5rem;
-    left: .5rem;
-    border-radius: 5px;
-    padding: .3rem;
-    // Only shown on demand.
-    display: none;
-    // TODO: Theming.
-    background-color: rgba(0, 0, 0, 0.5);
-    color: #eeeeee;
+.rendure-html-canvas-renderer-interaction-info-container {
+  position: absolute;
+  bottom: .5rem;
+  left: .5rem;
+  border-radius: 5px;
+  padding: .3rem;
+  // Only shown on demand.
+  display: none;
+  // TODO: Theming.
+  background-color: rgba(0, 0, 0, 0.5);
+  color: #eeeeee;
 }
 
-.html-canvas-renderer-error-popover {
-    position: absolute;
-    bottom: 5%;
-    left: 5%;
-    padding: .2rem .4rem;
-    border-radius: 4px;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    // Only shown on demand.
-    display: none;
-    // TODO: Theming.
-    background-color: rgba(0, 0, 0, 0.8);
-    color: #eeeeee;
+.rendure-html-canvas-renderer-error-popover {
+  position: absolute;
+  bottom: 5%;
+  left: 5%;
+  padding: .2rem .4rem;
+  border-radius: 4px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  // Only shown on demand.
+  display: none;
+  // TODO: Theming.
+  background-color: rgba(0, 0, 0, 0.8);
+  color: #eeeeee;
+}
+
+canvas.rendure-canvas {
+  --color-minimap-viewport: #ff7a00;
+}
+
+canvas.rendure-minimap {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 180px;
+  height: 180px;
+  border: 1px solid black;
 }

@@ -158,3 +158,31 @@ export function tempColor(temp: number): [number, number, number] {
     const lightness = 0.75;
     return [(1 - temp) * maxHue, saturation, lightness];
 }
+
+/**
+ * Shade a color by a percentage.
+ * @param color   Hex color string representation ('#RRGGBB').
+ * @param percent Percentage to shade the color, e.g. -20 for 20% darker.
+ * @returns       Shaded hex color string representation ('#RRGGBB').
+ */
+export function shadeHexColor(color: string, percent: number): string {
+    const rgb = hex2rgb(color);
+    if (!rgb)
+        throw new Error('Invalid color format');
+
+    rgb[0] = (rgb[0] * (100 + percent)) / 100;
+    rgb[1] = (rgb[1] * (100 + percent)) / 100;
+    rgb[2] = (rgb[2] * (100 + percent)) / 100;
+
+    rgb[0] = rgb[0] < 255 ? Math.round(rgb[0]) : 255;
+    rgb[1] = rgb[1] < 255 ? Math.round(rgb[1]) : 255;
+    rgb[2] = rgb[2] < 255 ? Math.round(rgb[2]) : 255;
+
+    const rVal = rgb[0].toString(16);
+    const gVal = rgb[1].toString(16);
+    const bVal = rgb[2].toString(16);
+    return '#' +
+        (rVal.length === 1? '0' + rVal : rVal) +
+        (gVal.length === 1? '0' + gVal : gVal) +
+        (bVal.length === 1? '0' + bVal : bVal);
+}

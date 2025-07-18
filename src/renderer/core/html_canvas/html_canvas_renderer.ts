@@ -190,7 +190,7 @@ export abstract class HTMLCanvasRenderer extends RendererBase {
         // mask.
         // Initialize the interaction information panel.
         this.interactionInfoBox = $('<div>', {
-            class: 'html-canvas-renderer-interaction-info-container',
+            class: 'rendure-html-canvas-renderer-interaction-info-container',
         }).appendTo(this.container);
         this.interactionInfoText = $('<div>', {
             html: '',
@@ -199,7 +199,7 @@ export abstract class HTMLCanvasRenderer extends RendererBase {
         // Initialze the error popover container.
         this.errorPopoverContainer = $('<div>', {
             text: '',
-            class: 'html-canvas-renderer-error-popover',
+            class: 'rendure-html-canvas-renderer-error-popover',
         }).appendTo(this.container);
         this.errorPopoverText = $('<div>').appendTo(this.errorPopoverContainer);
         const errorPopoverDismiss = $('<button>', {
@@ -421,8 +421,7 @@ export abstract class HTMLCanvasRenderer extends RendererBase {
         this.minimapCanvas.addEventListener('click', (ev) => {
             this.onMinimapClicked(ev);
         });
-        this.minimapCanvas.id = 'minimap';
-        this.minimapCanvas.classList.add('rendure-canvas');
+        this.minimapCanvas.classList.add('rendure-canvas', 'rendure-minimap');
         this.minimapCanvas.style.backgroundColor = 'white';
         this.minimapCtx = this.minimapCanvas.getContext('2d') ?? undefined;
         this.container.append(this.minimapCanvas);
