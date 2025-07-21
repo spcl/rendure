@@ -75,7 +75,7 @@ export abstract class HTMLCanvasRenderer extends RendererBase {
     private pdfCtx?: PDFCanvasRenderingContext2D;
 
     // Minimap related fields.
-    protected minimapCtx?: CanvasRenderingContext2D;
+    protected _minimapCtx?: CanvasRenderingContext2D;
     protected minimapCanvas?: HTMLCanvasElement;
     protected minimapBounds = { minX: 0, minY: 0, maxX: 0, maxY: 0 };
 
@@ -342,8 +342,8 @@ export abstract class HTMLCanvasRenderer extends RendererBase {
             y: minimapCenterOffset.y * (1 / scale),
         };
         const targetPos = {
-            x: (contentsBB.w / 2) + targetCenterOffset.x,
-            y: (contentsBB.h / 2) + targetCenterOffset.y,
+            x: (contentsBB.x + (contentsBB.w / 2)) + targetCenterOffset.x,
+            y: (contentsBB.y + (contentsBB.h / 2)) + targetCenterOffset.y,
         };
 
         this.moveViewTo(targetPos.x, targetPos.y);
@@ -413,7 +413,7 @@ export abstract class HTMLCanvasRenderer extends RendererBase {
     public disableMinimap(): void {
         this.minimapCanvas?.remove();
         this.minimapCanvas = undefined;
-        this.minimapCtx = undefined;
+        this._minimapCtx = undefined;
     }
 
     public enableMinimap(): void {
@@ -423,7 +423,7 @@ export abstract class HTMLCanvasRenderer extends RendererBase {
         });
         this.minimapCanvas.classList.add('rendure-canvas', 'rendure-minimap');
         this.minimapCanvas.style.backgroundColor = 'white';
-        this.minimapCtx = this.minimapCanvas.getContext('2d') ?? undefined;
+        this._minimapCtx = this.minimapCanvas.getContext('2d') ?? undefined;
         this.container.append(this.minimapCanvas);
     }
 
@@ -917,6 +917,10 @@ export abstract class HTMLCanvasRenderer extends RendererBase {
 
     public get viewportOnly(): boolean {
         return this._currentOptions.viewportOnly ?? false;
+    }
+
+    public get minimapCtx(): CanvasRenderingContext2D | undefined {
+        return this._minimapCtx;
     }
 
 }

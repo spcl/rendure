@@ -12,11 +12,13 @@ export abstract class HTMLCanvasRenderable extends Renderable {
     public constructor(
         renderer: HTMLCanvasRenderer,
         protected readonly _ctx: CanvasRenderingContext2D,
+        _minimapCtx: CanvasRenderingContext2D | undefined,
         id: number,
         data?: Record<string, unknown>
     ) {
         super(renderer, id, data);
         this._activeCtx = _ctx;
+        this._minimapCtx = _minimapCtx;
     }
 
     protected get minimapCxt(): CanvasRenderingContext2D | undefined {
