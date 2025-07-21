@@ -899,6 +899,10 @@ export abstract class HTMLCanvasRenderer extends RendererBase {
         return this.mousePos;
     }
 
+    public getRealMousePos(): Point2D | undefined {
+        return this.realMousePos;
+    }
+
     public setBackgroundColor(backgroundColor: string): void {
         this.backgroundColor = backgroundColor;
     }
