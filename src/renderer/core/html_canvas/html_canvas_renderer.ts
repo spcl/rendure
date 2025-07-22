@@ -427,8 +427,6 @@ export abstract class HTMLCanvasRenderer extends RendererBase {
         this.container.append(this.minimapCanvas);
     }
 
-    protected abstract initUI(): void;
-
     protected registerMouseHandlers(): void {
         this.canvas.addEventListener('click', this.onClick.bind(this));
         this.canvas.addEventListener('dblclick', this.onDblClick.bind(this));
@@ -721,6 +719,28 @@ export abstract class HTMLCanvasRenderer extends RendererBase {
         } else {
             this.zoomToFitContents(animate, padding, redraw);
         }
+    }
+
+    public zoomIn(event?: MouseEvent): void {
+        // Calculate the scale factor based on the shift key
+        const scaleFactor = event?.shiftKey ? Math.pow(1.1, 5) : 1.1;
+        // Calculate the center of the canvas.
+        const canvasRect = this.canvas.getBoundingClientRect();
+        const centerX = canvasRect.width / 2;
+        const centerY = canvasRect.height / 2;
+        this.canvasManager.scale(scaleFactor, centerX, centerY);
+        this.drawAsync();
+    }
+
+    public zoomOut(event?: MouseEvent): void {
+        // Calculate the scale factor based on the shift key.
+        const scaleFactor = event?.shiftKey ? Math.pow(0.9, 5) : 0.9;
+        // Calculate the center of the canvas
+        const canvasRect = this.canvas.getBoundingClientRect();
+        const centerX = canvasRect.width / 2;
+        const centerY = canvasRect.height / 2;
+        this.canvasManager.scale(scaleFactor, centerX, centerY);
+        this.drawAsync();
     }
 
     /**

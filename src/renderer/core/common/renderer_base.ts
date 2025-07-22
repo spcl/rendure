@@ -3,6 +3,7 @@
 import { EventEmitter } from 'events';
 import type { SimpleRect } from '../../../types';
 import type { Renderable } from './renderable';
+import type { RendererUI } from './renderer_ui';
 
 
 // Declare `vscode` to avoid TypeScript errors. If this variable is actually
@@ -22,6 +23,8 @@ export abstract class RendererBase extends EventEmitter {
     protected readonly _selectedRenderables = new Set<Renderable>();
     protected readonly _highlightedRenderables = new Set<Renderable>();
 
+    protected _ui?: RendererUI;
+
     public constructor(
         private _debugDraw: boolean = false
     ) {
@@ -36,11 +39,23 @@ export abstract class RendererBase extends EventEmitter {
         } catch (_ex) { }
     }
 
-    public abstract getContentsBoundingBox(): SimpleRect;
+    protected abstract initUI(ui?: RendererUI): void;
+
+    // ---------------
+    // - Public API: -
+    // ---------------
 
     public abstract draw(): void;
-
     public abstract drawAsync(): void;
+    public abstract enableMinimap(): void;
+    public abstract disableMinimap(): void;
+
+    public abstract getContentsBoundingBox(): SimpleRect;
+
+    public abstract zoomToFitContents(): void;
+    public abstract zoomToFitWidth(): void;
+    public abstract zoomIn(event?: MouseEvent): void;
+    public abstract zoomOut(event?: MouseEvent): void;
 
     public get hoveredRenderables(): ReadonlySet<Renderable> {
         return this._hoveredRenderables;
