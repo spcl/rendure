@@ -546,6 +546,12 @@ export abstract class HTMLCanvasRenderer extends RendererBase {
         dt?: number, ctx?: CanvasRenderingContext2D
     ): void;
 
+    protected abstract setTemporaryContext(
+        ctx: CanvasRenderingContext2D
+    ): void;
+
+    protected abstract restoreContext(): void;
+
     public draw(dt?: number, ctx?: CanvasRenderingContext2D): void {
         this.onPreDraw();
 
@@ -580,10 +586,10 @@ export abstract class HTMLCanvasRenderer extends RendererBase {
     }
 
     protected onPostDraw(): void {
-        this.drawMinimap();
-
         // In the case of PDF drawing, explicitly end the context.
         this.pdfCtx?.end();
+
+        this.drawMinimap();
     }
 
     public saveAsPDF(filename: string, saveAll: boolean = false): void {
@@ -624,10 +630,12 @@ export abstract class HTMLCanvasRenderer extends RendererBase {
 
         // Center on saved region.
         if (!saveAll)
-            this.ctx.translate(-(curx ? curx : 0), -(cury ? cury : 0));
+            this.pdfCtx.translate(-(curx ? curx : 0), -(cury ? cury : 0));
         else
-            this.ctx.translate(contentBox.x, contentBox.y);
+            this.pdfCtx.translate(contentBox.x, contentBox.y);
 
+        this.canvasManager.stopAnimation();
+        this.setTemporaryContext(this.pdfCtx);
         this.drawAsync(this.pdfCtx);
 
         this.pdfCtx.stream.on('finish', () => {
@@ -638,6 +646,7 @@ export abstract class HTMLCanvasRenderer extends RendererBase {
             this._currentOptions.viewportOnly = oldViewportOnly;
             this._currentOptions.adaptiveContentHiding = oldAdaptiveHiding;
             this.pdfCtx = undefined;
+            this.restoreContext();
             this.drawAsync();
         });
     }

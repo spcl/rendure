@@ -16,7 +16,9 @@ export class RendererUI {
     protected readonly toolbar: JQuery;
     protected readonly toolbarZoomGroup?: JQuery;
     protected readonly menu?: JQuery;
-    protected menuItems: JQuery[] = [];
+    protected menuItems: [
+        string, string | undefined, ((e: MouseEvent) => void) | undefined
+    ][] = [];
     protected readonly menuDropdownBtn?: JQuery;
     protected readonly zoomInOutBtns?: JQuery;
 
@@ -140,6 +142,18 @@ export class RendererUI {
         if (!this.menu)
             throw new Error('Menu was not enabled');
         this.menu.empty();
+
+        for (const entry of this.menuItems) {
+            const className = entry[0];
+            const label = entry[1];
+            const handler = entry[2];
+            const item = $('<li>', {
+                class: className,
+                text: label ?? '',
+                click: handler,
+            });
+            this.menu.append(item);
+        }
     }
 
     public addMenuItem(
@@ -151,11 +165,11 @@ export class RendererUI {
         if (!this.menu)
             throw new Error('Menu was not enabled');
 
-        const item = $('<li>', {
-            class: 'dropdown-item',
-            text: label,
-            click: handler,
-        });
+        const item: [string, string, (e: MouseEvent) => void] = [
+            'dropdown-item',
+            label,
+            handler,
+        ];
         if (idx < 0 || idx >= this.menuItems.length)
             this.menuItems.push(item);
         else
@@ -177,9 +191,11 @@ export class RendererUI {
         if (!this.menu)
             throw new Error('Menu was not enabled');
 
-        const divider = $('<li>', {
-            class: 'dropdown-divider',
-        });
+        const divider: [string, undefined, undefined] = [
+            'dropdown-divider',
+            undefined,
+            undefined,
+        ];
         if (idx < 0 || idx >= this.menuItems.length)
             this.menuItems.push(divider);
         else
