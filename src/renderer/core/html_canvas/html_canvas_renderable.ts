@@ -44,16 +44,14 @@ export abstract class HTMLCanvasRenderable extends Renderable {
     public debugDraw(overrideDebugDrawEnabled: boolean = false): void {
         if (this.renderer.debugDraw || overrideDebugDrawEnabled) {
             // Print the center and bounding box in debug mode.
+            const topleft = this.topleft();
             this.ctx.beginPath();
-            this.ctx.arc(this.x, this.y, 1, 0, 2 * Math.PI, false);
+            this.ctx.arc(topleft.x, topleft.y, 1, 0, 2 * Math.PI, false);
             this.ctx.fillStyle = 'red';
             this.ctx.fill();
             this.ctx.strokeStyle = 'red';
             this.ctx.stroke();
-            this.ctx.strokeRect(
-                this.x - (this.width / 2.0), this.y - (this.height / 2.0),
-                this.width, this.height
-            );
+            this.ctx.strokeRect(topleft.x, topleft.y, this.width, this.height);
         }
     }
 
