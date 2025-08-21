@@ -471,23 +471,24 @@ export abstract class HTMLCanvasRenderer extends RendererBase {
         this.canvasManager.drawAsync(ctx);
     }
 
-    protected getMouseEventRealCoords(event: MouseEvent | TouchEvent): Point2D {
+    protected getMouseEventRealCoords(event: MouseEvent): Point2D {
         const rect = this.canvas.getBoundingClientRect();
-
-        if (event instanceof TouchEvent) {
-            return {
-                x: this.canvasManager.mapPixelToCoordsX(
-                    event.touches[0].clientX - rect.left
-                ),
-                y: this.canvasManager.mapPixelToCoordsY(
-                    event.touches[0].clientY - rect.top
-                ),
-            };
-        }
 
         return {
             x: this.canvasManager.mapPixelToCoordsX(event.clientX - rect.left),
             y: this.canvasManager.mapPixelToCoordsY(event.clientY - rect.top),
+        };
+    }
+
+    protected getTouchEventRealCoords(event: TouchEvent): Point2D {
+        const rect = this.canvas.getBoundingClientRect();
+        return {
+            x: this.canvasManager.mapPixelToCoordsX(
+                event.touches[0].clientX - rect.left
+            ),
+            y: this.canvasManager.mapPixelToCoordsY(
+                event.touches[0].clientY - rect.top
+            ),
         };
     }
 
