@@ -22,6 +22,7 @@ export abstract class RendererBase extends EventEmitter {
     protected readonly _hoveredRenderables = new Set<Renderable>();
     protected readonly _selectedRenderables = new Set<Renderable>();
     protected readonly _highlightedRenderables = new Set<Renderable>();
+    protected readonly _fadedRenderables = new Set<Renderable>();
 
     protected _ui?: RendererUI;
 
@@ -69,6 +70,10 @@ export abstract class RendererBase extends EventEmitter {
         return this._highlightedRenderables;
     }
 
+    public get fadedRenderables(): ReadonlySet<Renderable> {
+        return this._fadedRenderables;
+    }
+
     public hoverRenderable(renderable: Renderable): void {
         this._hoveredRenderables.add(renderable);
     }
@@ -93,6 +98,14 @@ export abstract class RendererBase extends EventEmitter {
         this._highlightedRenderables.delete(renderable);
     }
 
+    public fadeRenderable(renderable: Renderable): void {
+        this._fadedRenderables.add(renderable);
+    }
+
+    public unfadeRenderable(renderable: Renderable): void {
+        this._fadedRenderables.delete(renderable);
+    }
+
     public clearHovered(): void {
         this._hoveredRenderables.clear();
     }
@@ -103,6 +116,10 @@ export abstract class RendererBase extends EventEmitter {
 
     public clearHighlighted(): void {
         this._highlightedRenderables.clear();
+    }
+
+    public clearFaded(): void {
+        this._fadedRenderables.clear();
     }
 
     // --------------

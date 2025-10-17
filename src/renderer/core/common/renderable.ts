@@ -38,6 +38,10 @@ export abstract class Renderable {
         return this.renderer.highlightedRenderables.has(this);
     }
 
+    public get faded(): boolean {
+        return this.renderer.fadedRenderables.has(this);
+    }
+
     public setLayout(): void {
         // Dagre does not work well with properties, only fields.
         if (this.data && Object.hasOwn(this.data, 'layout')) {
