@@ -12,6 +12,8 @@
         "moduleResolution": "bundler",
         "verbatimModuleSyntax": true,
         "moduleDetection": "force",
+        "declaration": true,
+        "outDir": "dist",
 
         /* Linting */
         "strict": true,
