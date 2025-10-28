@@ -1,9 +1,9 @@
 {
     "name": "rendure",
-    "version": "0.1.4",
+    "version": "0.1.5",
     "description": "Lightweight Web Rendering Framework",
     "homepage": "https://github.com/spcl/rendure",
-    "main": "dist/index.js",
+    "main": "dist/rendure.js",
     "types": "dist/index.d.ts",
     "keywords": [
         "rendering",
