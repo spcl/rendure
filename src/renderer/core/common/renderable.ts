@@ -1,7 +1,7 @@
 // Copyright (c) ETH Zurich and the rendure authors. All rights reserved.
 
 import type { Point2D } from '../../../types';
-import { RendererBase } from './renderer_base';
+import type { RendererBase } from './renderer_base';
 
 
 export abstract class Renderable {

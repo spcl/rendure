@@ -1,7 +1,7 @@
 // Copyright (c) ETH Zurich and the rendure authors. All rights reserved.
 
 import type { Point2D, SimpleRect } from '../../../types';
-import { Renderable } from './renderable';
+import type { Renderable } from './renderable';
 
 
 // Returns the distance from point p to line defined by two points

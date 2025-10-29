@@ -7,8 +7,15 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.ts$/,
-                use: 'ts-loader',
+                test: /\.m?[jt]sx?$/,
+                use: [
+                    {
+                        loader: 'ts-loader',
+                        options: {
+                            configFile: 'tsconfig-build.json',
+                        },
+                    },
+                ],
                 exclude: /node_modules/,
             },
             {
@@ -29,7 +36,8 @@ module.exports = {
         rendure: './src/index.ts',
     },
     output: {
-        filename: '[name].js',
+        filename: 'index.js',
         path: path.resolve(__dirname, 'dist'),
     },
+    plugins: []
 }

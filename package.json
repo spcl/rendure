@@ -1,9 +1,9 @@
 {
     "name": "rendure",
-    "version": "0.1.5",
+    "version": "0.1.6",
     "description": "Lightweight Web Rendering Framework",
     "homepage": "https://github.com/spcl/rendure",
-    "main": "dist/rendure.js",
+    "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "keywords": [
         "rendering",
@@ -28,6 +28,7 @@
     },
     "dependencies": {
         "bootstrap": "^5.3.7",
+        "eventemitter3": "^5.0.1",
         "jquery": "^3.7.1",
         "material-symbols": "^0.38.0"
     },

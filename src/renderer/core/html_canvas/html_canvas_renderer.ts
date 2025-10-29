@@ -7,7 +7,7 @@ import $ from 'jquery';
 import { CanvasManager } from './canvas_manager';
 import type { Point2D, SimpleRect } from '../../../types';
 import { RendererBase } from '../common/renderer_base';
-import { Renderable } from '../common/renderable';
+import type { Renderable } from '../common/renderable';
 import { boundingBox } from '../common/renderer_utils';
 
 

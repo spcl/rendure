@@ -1,6 +1,6 @@
 // Copyright (c) ETH Zurich and the rendure authors. All rights reserved.
 
-import { EventEmitter } from 'events';
+import { EventEmitter } from 'eventemitter3';
 import type { SimpleRect } from '../../../types';
 import type { Renderable } from './renderable';
 import type { RendererUI } from './renderer_ui';

@@ -1,7 +1,7 @@
 // Copyright (c) ETH Zurich and the rendure authors. All rights reserved.
 
 import { Renderable } from '../common/renderable';
-import { HTMLCanvasRenderer } from './html_canvas_renderer';
+import type { HTMLCanvasRenderer } from './html_canvas_renderer';
 
 
 export abstract class HTMLCanvasRenderable extends Renderable {
