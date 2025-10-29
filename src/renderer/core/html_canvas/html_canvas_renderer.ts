@@ -6,7 +6,7 @@ import $ from 'jquery';
 
 import { CanvasManager } from './canvas_manager';
 import type { Point2D, SimpleRect } from '../../../types';
-import { RendererBase } from '../common/renderer_base';
+import { RendererBase, type RendererEvent } from '../common/renderer_base';
 import type { Renderable } from '../common/renderable';
 import { boundingBox } from '../common/renderer_utils';
 
@@ -50,24 +50,12 @@ export const HTML_CANVAS_RENDERER_DEFAULT_OPTIONS: HTMLCanvasRendererOptions = {
 export type HTMLCanvasRendererOptionKey = keyof HTMLCanvasRendererOptions;
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface HTMLCanvasRendererEvent {
+export interface HTMLCanvasRendererEvent extends RendererEvent {
 }
 
-/* eslint-disable @typescript-eslint/no-unsafe-declaration-merging */
-export interface HTMLCanvasRenderer {
 
-    on<U extends keyof HTMLCanvasRendererEvent>(
-        event: U, listener: HTMLCanvasRendererEvent[U]
-    ): this;
-
-    emit<U extends keyof HTMLCanvasRendererEvent>(
-        event: U, ...args: Parameters<HTMLCanvasRendererEvent[U]>
-    ): boolean;
-
-}
-
-/* eslint-disable @typescript-eslint/no-unsafe-declaration-merging */
-export abstract class HTMLCanvasRenderer extends RendererBase {
+export abstract class HTMLCanvasRenderer<E extends HTMLCanvasRendererEvent>
+    extends RendererBase<E> {
 
     public readonly canvas: HTMLCanvasElement;
     public readonly canvasManager: CanvasManager;
@@ -166,7 +154,11 @@ export abstract class HTMLCanvasRenderer extends RendererBase {
         this.ctx = rCtx;
 
         // Set up translation/scaling management.
-        this.canvasManager = new CanvasManager(this.ctx, this, this.canvas);
+        this.canvasManager = new CanvasManager(
+            this.ctx,
+            this as unknown as HTMLCanvasRenderer<HTMLCanvasRendererEvent>,
+            this.canvas
+        );
         if (this.initialUserTransform !== null)
             this.canvasManager.setUserTransform(this.initialUserTransform);
 

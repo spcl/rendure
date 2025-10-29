@@ -10,7 +10,12 @@ import type { RendererUI } from './renderer_ui';
 // defined, the module is running inside VSCode.
 declare const vscode: any;
 
-export abstract class RendererBase extends EventEmitter {
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export interface RendererEvent {
+}
+
+export abstract class RendererBase<E extends RendererEvent>
+    extends EventEmitter<E> {
 
     // Indicate whether the renderer runs inside of VSCode.
     public readonly inVSCode: boolean = false;

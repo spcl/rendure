@@ -1,7 +1,10 @@
 // Copyright (c) ETH Zurich and the rendure authors. All rights reserved.
 
 import { Renderable } from '../common/renderable';
-import type { HTMLCanvasRenderer } from './html_canvas_renderer';
+import type {
+    HTMLCanvasRenderer,
+    HTMLCanvasRendererEvent,
+} from './html_canvas_renderer';
 
 
 export abstract class HTMLCanvasRenderable extends Renderable {
@@ -10,7 +13,7 @@ export abstract class HTMLCanvasRenderable extends Renderable {
     protected _minimapCtx?: CanvasRenderingContext2D;
 
     public constructor(
-        renderer: HTMLCanvasRenderer,
+        renderer: HTMLCanvasRenderer<HTMLCanvasRendererEvent>,
         protected readonly _ctx: CanvasRenderingContext2D,
         _minimapCtx: CanvasRenderingContext2D | undefined,
         id: number,

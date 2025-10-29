@@ -4,7 +4,7 @@ import '../../../../scss/renderer_ui.scss';
 
 import $ from 'jquery';
 
-import type { RendererBase } from './renderer_base';
+import type { RendererBase, RendererEvent } from './renderer_base';
 
 
 export type RendererUIFeature = (
@@ -24,7 +24,7 @@ export class RendererUI {
 
     public constructor(
         protected readonly container: JQuery,
-        protected readonly renderer: RendererBase,
+        protected readonly renderer: RendererBase<RendererEvent>,
         protected readonly _featuresMask: Partial<Record<
             RendererUIFeature, boolean
         >> = {
