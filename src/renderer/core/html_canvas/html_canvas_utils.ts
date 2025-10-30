@@ -8,7 +8,6 @@ import {
 import type { Point2D } from '../../../types';
 import type {
     HTMLCanvasRenderer,
-    HTMLCanvasRendererEvent,
 } from './html_canvas_renderer';
 
 interface DOMMatrixDecomposition {
@@ -151,7 +150,7 @@ interface AdaptiveTextPadding {
 
 export function drawAdaptiveText(
     ctx: CanvasRenderingContext2D,
-    renderer: HTMLCanvasRenderer<HTMLCanvasRendererEvent>,
+    renderer: HTMLCanvasRenderer,
     farText: string, closeText: string,
     x: number, y: number, w: number, h: number,
     pppThresh: number, maxFontSize: number = DEFAULT_MAX_FONTSIZE,

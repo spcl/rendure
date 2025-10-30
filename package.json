@@ -1,6 +1,6 @@
 {
     "name": "rendure",
-    "version": "0.1.7",
+    "version": "0.1.8",
     "description": "Lightweight Web Rendering Framework",
     "homepage": "https://github.com/spcl/rendure",
     "main": "dist/index.js",
@@ -22,13 +22,10 @@
     "license": "BSD-3-Clause",
     "scripts": {
         "clean": "rimraf dist && rimraf out",
-        "dev": "npm run clean && webpack --config-name=rendure --mode=development",
-        "watch": "npm run clean && webpack --config-name=rendure --watch --mode=development",
-        "build": "npm run clean && webpack --config-name=rendure --mode=production && typedoc --out dist/doc src"
+        "build": "npm run clean && tsc && typedoc --out dist/doc src"
     },
-    "dependencies": {
+    "peerDependencies": {
         "bootstrap": "^5.3.7",
-        "eventemitter3": "^5.0.1",
         "jquery": "^3.7.1",
         "material-symbols": "^0.38.0"
     },
@@ -37,20 +34,14 @@
         "@types/bootstrap": "^5.2.10",
         "@types/jquery": "^3.5.32",
         "@types/node": "^24.0.14",
-        "css-loader": "^7.1.2",
         "eslint": "^9.31.0",
         "globals": "^16.3.0",
         "prettier": "^3.6.2",
         "rimraf": "^6.0.1",
         "sass": "^1.77.6",
-        "sass-loader": "^16.0.6",
-        "style-loader": "^4.0.0",
-        "ts-loader": "^9.5.4",
         "ts-node": "^10.9.2",
         "typedoc": "^0.28.7",
         "typescript": "^5.8.3",
-        "typescript-eslint": "^8.37.0",
-        "webpack": "^5.102.1",
-        "webpack-cli": "^6.0.1"
+        "typescript-eslint": "^8.37.0"
     }
 }

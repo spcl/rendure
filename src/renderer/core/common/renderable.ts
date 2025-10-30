@@ -1,7 +1,7 @@
 // Copyright (c) ETH Zurich and the rendure authors. All rights reserved.
 
 import type { Point2D } from '../../../types';
-import type { RendererBase, RendererEvent } from './renderer_base';
+import type { RendererBase } from './renderer_base';
 
 
 export abstract class Renderable {
@@ -15,14 +15,14 @@ export abstract class Renderable {
     public height: number = 0;
 
     public constructor(
-        protected readonly _renderer: RendererBase<RendererEvent>,
+        protected readonly _renderer: RendererBase,
         public id: number,
         public data?: Record<string, unknown>
     ) {
         this.setLayout();
     }
 
-    public get renderer(): RendererBase<RendererEvent> {
+    public get renderer(): RendererBase {
         return this._renderer;
     }
 
@@ -127,7 +127,7 @@ export abstract class Renderable {
     }
 
     public getCssProperty(
-        renderer: RendererBase<RendererEvent>, propertyName: string
+        renderer: RendererBase, propertyName: string
     ): string {
         return renderer.getCssProperty(propertyName);
     }

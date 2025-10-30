@@ -1,6 +1,6 @@
 // Copyright (c) ETH Zurich and the rendure authors. All rights reserved.
 
-import { EventEmitter } from 'eventemitter3';
+import { EventEmitter } from 'events';
 import type { SimpleRect } from '../../../types';
 import type { Renderable } from './renderable';
 import type { RendererUI } from './renderer_ui';
@@ -14,8 +14,7 @@ declare const vscode: any;
 export interface RendererEvent {
 }
 
-export abstract class RendererBase<E extends RendererEvent>
-    extends EventEmitter<E> {
+export abstract class RendererBase extends EventEmitter {
 
     // Indicate whether the renderer runs inside of VSCode.
     public readonly inVSCode: boolean = false;

@@ -1,14 +1,12 @@
 // Copyright (c) ETH Zurich and the rendure authors. All rights reserved.
 
-import '../../../../scss/html_canvas_renderer.scss';
-
 import $ from 'jquery';
 
 import { CanvasManager } from './canvas_manager';
 import type { Point2D, SimpleRect } from '../../../types';
 import { RendererBase, type RendererEvent } from '../common/renderer_base';
-import type { Renderable } from '../common/renderable';
 import { boundingBox } from '../common/renderer_utils';
+import type { HTMLCanvasRenderable } from './html_canvas_renderable';
 
 
 // External, non-typescript libraries which are presented as previously loaded
@@ -53,9 +51,22 @@ export type HTMLCanvasRendererOptionKey = keyof HTMLCanvasRendererOptions;
 export interface HTMLCanvasRendererEvent extends RendererEvent {
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
+export interface HTMLCanvasRenderer {
 
-export abstract class HTMLCanvasRenderer<E extends HTMLCanvasRendererEvent>
-    extends RendererBase<E> {
+    on<U extends keyof HTMLCanvasRendererEvent>(
+        event: U, listener: HTMLCanvasRendererEvent[U]
+    ): this;
+
+    emit<U extends keyof HTMLCanvasRendererEvent>(
+        event: U, ...args: Parameters<HTMLCanvasRendererEvent[U]>
+    ): boolean;
+
+}
+
+
+// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
+export abstract class HTMLCanvasRenderer extends RendererBase {
 
     public readonly canvas: HTMLCanvasElement;
     public readonly canvasManager: CanvasManager;
@@ -154,11 +165,7 @@ export abstract class HTMLCanvasRenderer<E extends HTMLCanvasRendererEvent>
         this.ctx = rCtx;
 
         // Set up translation/scaling management.
-        this.canvasManager = new CanvasManager(
-            this.ctx,
-            this as unknown as HTMLCanvasRenderer<HTMLCanvasRendererEvent>,
-            this.canvas
-        );
+        this.canvasManager = new CanvasManager(this.ctx, this, this.canvas);
         if (this.initialUserTransform !== null)
             this.canvasManager.setUserTransform(this.initialUserTransform);
 
@@ -695,7 +702,7 @@ export abstract class HTMLCanvasRenderer<E extends HTMLCanvasRendererEvent>
     }
 
     public zoomToFit(
-        elements: Renderable[] | undefined = undefined,
+        elements: HTMLCanvasRenderable[] | undefined = undefined,
         animate: boolean = true,
         padding: number | undefined = undefined,
         redraw: boolean = true

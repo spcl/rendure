@@ -3,7 +3,6 @@
 import { Renderable } from '../common/renderable';
 import type {
     HTMLCanvasRenderer,
-    HTMLCanvasRendererEvent,
 } from './html_canvas_renderer';
 
 
@@ -13,7 +12,7 @@ export abstract class HTMLCanvasRenderable extends Renderable {
     protected _minimapCtx?: CanvasRenderingContext2D;
 
     public constructor(
-        renderer: HTMLCanvasRenderer<HTMLCanvasRendererEvent>,
+        renderer: HTMLCanvasRenderer,
         protected readonly _ctx: CanvasRenderingContext2D,
         _minimapCtx: CanvasRenderingContext2D | undefined,
         id: number,

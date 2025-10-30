@@ -1,10 +1,7 @@
 // Copyright (c) ETH Zurich and the rendure authors. All rights reserved.
 
 import type { Point2D, SimpleRect } from '../../../types';
-import type {
-    HTMLCanvasRenderer,
-    HTMLCanvasRendererEvent,
-} from './html_canvas_renderer';
+import type { HTMLCanvasRenderer } from './html_canvas_renderer';
 import { lerpMatrix } from './html_canvas_utils';
 
 const ANIMATION_DURATION = 1000;
@@ -31,7 +28,7 @@ interface ISetTransformFun {
 export class CanvasManager {
 
     private readonly ctx: CustomCanvasRenderingContext2D;
-    private readonly renderer: HTMLCanvasRenderer<HTMLCanvasRendererEvent>;
+    private readonly renderer: HTMLCanvasRenderer;
     private readonly canvas: HTMLCanvasElement;
 
     private animationId: number | null = null;
@@ -69,7 +66,7 @@ export class CanvasManager {
 
     public constructor(
         ctx: CanvasRenderingContext2D,
-        renderer: HTMLCanvasRenderer<HTMLCanvasRendererEvent>,
+        renderer: HTMLCanvasRenderer,
         canvas: HTMLCanvasElement
     ) {
         this.ctx = ctx as CustomCanvasRenderingContext2D;
