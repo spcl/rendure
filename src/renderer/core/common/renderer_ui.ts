@@ -12,6 +12,7 @@ export type RendererUIFeature = (
 export class RendererUI {
 
     protected readonly toolbar: JQuery;
+    protected readonly secondaryToolbar: JQuery;
     protected readonly toolbarZoomGroup?: JQuery;
     protected readonly menu?: JQuery;
     protected menuItems: [
@@ -32,7 +33,8 @@ export class RendererUI {
             minimap: true,
             zoomBtns: true,
         },
-        protected readonly withToolbar: boolean = true
+        protected readonly withToolbar: boolean = true,
+        protected readonly withSecondaryToolbar: boolean = true
     ) {
         if (this._featuresMask.minimap ?? true)
             this.renderer.enableMinimap();
@@ -49,8 +51,22 @@ export class RendererUI {
             },
         });
 
+        this.secondaryToolbar = $('<div>', {
+            class: 'button-bar-secondary',
+            css: {
+                position: 'absolute',
+                bottom: '10px',
+                right: '10px',
+                display: 'flex',
+                flexDirection: 'column',
+            },
+        });
+
         if (this.withToolbar)
             this.container.append(this.toolbar);
+
+        if (this.withSecondaryToolbar)
+            this.container.append(this.secondaryToolbar);
 
         // Construct menu.
         if (this._featuresMask.menu) {
@@ -107,14 +123,7 @@ export class RendererUI {
             this.zoomInOutBtns = $('<div>', {
                 class: 'zoom-in-out-container btn-group-vertical',
                 role: 'group',
-                css: {
-                    position: 'absolute',
-                    bottom: '10px', // Position at the bottom
-                    right: '10px',  // Position at the right
-                    display: 'flex',
-                    flexDirection: 'column',
-                },
-            }).appendTo(this.container);
+            }).appendTo(this.secondaryToolbar);
             // Add Zoom In Button
             $('<button>', {
                 class: 'btn btn-secondary btn-sm btn-material',
