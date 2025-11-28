@@ -1,6 +1,6 @@
 {
     "name": "rendure",
-    "version": "0.1.9",
+    "version": "0.1.10",
     "description": "Lightweight Web Rendering Framework",
     "homepage": "https://github.com/spcl/rendure",
     "main": "dist/index.js",
@@ -27,7 +27,7 @@
     "peerDependencies": {
         "bootstrap": "^5.3.7",
         "jquery": "^3.7.1",
-        "material-symbols": "^0.38.0"
+        "material-symbols": "^0.40.0"
     },
     "devDependencies": {
         "@eslint/js": "^9.31.0",
